@@ -59,8 +59,9 @@ jobs:
 
       - name: Capture emulator logcat
         if: always()
+        timeout-minutes: 1
         run: |
-          adb logcat -d > emulator-logcat.txt || true
+          timeout 30s adb logcat -d > emulator-logcat.txt || true
 
       - name: Upload emulator diagnostics
         if: always()
