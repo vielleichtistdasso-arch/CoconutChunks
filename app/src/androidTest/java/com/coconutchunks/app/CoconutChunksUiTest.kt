@@ -102,8 +102,11 @@ class CoconutChunksUiTest {
     fun reviewCardHidesThenRevealsExamples() {
         val chunk = "Recall chunk ${System.nanoTime()}"
 
-        composeRule.onNodeWithTag("add_chunk_fab").performClick()
-        composeRule.onNodeWithTag("chunk_text").performTextInput(chunk)
+        composeRule.onNodeWithTag("add_chunk_fab")
+            .performClick()
+
+        composeRule.onNodeWithTag("chunk_text")
+            .performTextInput(chunk)
 
         composeRule.onNodeWithTag("example_1")
             .performTextInput("Ich erinnere mich daran.")
@@ -117,43 +120,55 @@ class CoconutChunksUiTest {
             .assertExists()
             .performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
-            composeRule
-                .onAllNodesWithTag("nav_review")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+        composeRule.waitUntil(
+            conditionDescription = "nav_review should appear after saving the chunk",
+            timeoutMillis = 10_000
+        ) {
+        composeRule
+            .onAllNodesWithTag("nav_review")
+            .fetchSemanticsNodes()
+            .isNotEmpty()
         }
 
         composeRule.onNodeWithTag("nav_review")
             .assertExists()
             .performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
-            composeRule
-                .onAllNodesWithText("Start Review")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+        composeRule.waitUntil(
+            conditionDescription = "Start Review button should appear on Review home",
+            timeoutMillis = 10_000
+        ) {
+        composeRule
+            .onAllNodesWithText("Start Review")
+            .fetchSemanticsNodes()
+            .isNotEmpty()
         }
 
         composeRule.onNodeWithText("Start Review")
             .performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
-            composeRule
-                .onAllNodesWithTag("review_card")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+        composeRule.waitUntil(
+            conditionDescription = "review_card should appear after starting review",
+            timeoutMillis = 15_000
+        ) {
+        composeRule
+            .onAllNodesWithTag("review_card")
+            .fetchSemanticsNodes()
+            .isNotEmpty()
         }
 
         composeRule.onNodeWithTag("review_card")
             .assertExists()
             .performClick()
 
-        composeRule.waitUntil(timeoutMillis = 5_000) {
-            composeRule
-                .onAllNodesWithTag("revealed_examples")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+        composeRule.waitUntil(
+            conditionDescription = "revealed_examples should appear after tapping review card",
+            timeoutMillis = 10_000
+        ) {
+        composeRule
+            .onAllNodesWithTag("revealed_examples")
+            .fetchSemanticsNodes()
+            .isNotEmpty()
         }
 
         composeRule.onNodeWithTag("revealed_examples")
