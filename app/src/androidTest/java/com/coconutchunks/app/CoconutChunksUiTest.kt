@@ -1,5 +1,8 @@
 package com.coconutchunks.app
 
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -29,6 +32,7 @@ class CoconutChunksUiTest {
         composeRule.onNodeWithTag("add_chunk_fab").performClick()
         composeRule.onNodeWithTag("chunk_text").performTextInput(chunk)
         composeRule.onNodeWithTag("example_1").performTextInput("Das ist mein Beispiel.")
+        composeRule.onNodeWithTag("chunk_editor").performScrollToNode(hasTestTag("save_chunk"))
         composeRule.onNodeWithTag("save_chunk").performClick()
 
         composeRule.onNodeWithText(chunk).assertExists()
@@ -42,7 +46,9 @@ class CoconutChunksUiTest {
 
         composeRule.onNodeWithTag("add_chunk_fab").performClick()
         composeRule.onNodeWithTag("chunk_text").performTextInput(chunk)
+        composeRule.onNodeWithTag("chunk_editor").performScrollToNode(hasTestTag("chunk_note"))
         composeRule.onNodeWithTag("chunk_note").performTextInput(note)
+        composeRule.onNodeWithTag("chunk_editor").performScrollToNode(hasTestTag("save_chunk"))
         composeRule.onNodeWithTag("save_chunk").performClick()
 
         composeRule.onNodeWithTag("library_search").performTextInput(note)
@@ -74,7 +80,12 @@ class CoconutChunksUiTest {
         composeRule.onNodeWithTag("create_group").performClick()
         composeRule.onNodeWithTag("dialog_text_input").performTextInput(group)
         composeRule.onNodeWithText("Save").performClick()
-
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule
+                .onAllNodesWithText(group)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
+}
         composeRule.onNodeWithText(group).assertExists()
     }
 }
