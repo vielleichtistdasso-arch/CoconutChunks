@@ -62,7 +62,11 @@ class CoconutChunksUiTest {
         composeRule.onNodeWithTag("add_chunk_fab").performClick()
         composeRule.onNodeWithTag("chunk_text").performTextInput(chunk)
         composeRule.onNodeWithTag("example_1").performTextInput("Ich erinnere mich daran.")
-        composeRule.onNodeWithTag("save_chunk").performClick()
+        composeRule.onNodeWithTag("chunk_editor").performScrollToNode(hasTestTag("save_chunk"))
+        composeRule.waitForIdle()
+        composeRule.onNodeWithTag("save_chunk")
+            .assertExists()
+            .performClick()
 
         composeRule.onNodeWithTag("nav_review").performClick()
         composeRule.onNodeWithText("Start Review").performClick()
