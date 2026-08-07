@@ -8,8 +8,11 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 
 class Converters {
-    @TypeConverter fun fromStatus(value: ReviewStatus): String = value.name
-    @TypeConverter fun toStatus(value: String): ReviewStatus = ReviewStatus.valueOf(value)
+    @TypeConverter
+    fun fromStatus(value: ReviewStatus?): String? = value?.name
+
+    @TypeConverter
+    fun toStatus(value: String): ReviewStatus = ReviewStatus.valueOf(value)
 }
 
 @Database(
