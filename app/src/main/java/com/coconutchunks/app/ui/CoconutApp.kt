@@ -139,7 +139,7 @@ fun CoconutApp(vm: AppViewModel) {
 }
 
 @Composable
-private fun NavItem(tab: Tab, current: Tab, label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: (Tab) -> Unit) {
+private fun RowScope.NavItem(tab: Tab, current: Tab, label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: (Tab) -> Unit) {
     NavigationBarItem(
         modifier = Modifier.testTag("nav_${label.lowercase()}"),
         selected = tab == current,
