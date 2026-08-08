@@ -20,4 +20,6 @@ class ChunkRepository(
     suspend fun update(chunk: ChunkEntity) = dao.update(chunk)
 
     suspend fun delete(chunk: ChunkEntity) = dao.delete(chunk)
+
+    suspend fun replaceAll(chunks: List<ChunkEntity>) = dao.replaceAll(chunks)
 }
