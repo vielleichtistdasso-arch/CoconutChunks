@@ -1,163 +1,321 @@
-# Coconut Chunks — 1.3.0
+# Coconut Chunks
 
-A personal, offline-first Android app for collecting and reviewing German language chunks.
+Minimal native Android app for collecting and reviewing German language chunks.
 
-## Stack
+## V1 final polish
 
-- Kotlin
-- Jetpack Compose + Material 3
+- Larger, more readable review chunk text and increased spacing between examples
+- Coconut-inspired brown Material 3 color palette
+- Subtle asymmetric rounded Home buttons
+- JSON backup export and restore from Settings for phone migration
+- Restore is transactional and validates the backup before replacing current data
+- AndroidJUnitRunner is explicitly configured so instrumentation tests are actually discovered
+- CI fails if an emulator run reports zero instrumentation tests
+
+## Round 2 status
+
+Implemented:
+
+- Single Android app module
+- Kotlin + Jetpack Compose + Material 3 shell
+- Portrait orientation
+- Home screen with four large buttons
+- No INTERNET permission
+- Room 2.8.4 with KSP
+- One `chunks` table only
+- `ChunkEntity`, `ChunkStatus`, explicit enum converter
+- DAO for insert/update/delete/read/search/groups/count
+- Thin `ChunkRepository`
+- Room database version 1
+- Android instrumentation tests for core Room behavior and Unicode
+
+Not implemented yet:
+
+- Navigation routes
+- Add / Edit UI
+- Library UI
+- Review pool / session
+- Settings data count UI
+- Compose UI tests
+
+## Toolchain
+
+- JDK 17
+- Android Gradle Plugin 8.13.2
+- Gradle 8.13
+- Kotlin 2.2.21
+- Compose BOM 2026.06.00
+- Activity Compose 1.12.4
 - Room 2.8.4
-- DataStore 1.2.1
-- No server, account, analytics, ads, trackers, or internet permission
+- KSP 2.2.21-2.0.5
+- compileSdk 36
+- targetSdk 36
+- minSdk 26
 
-## Main features
+## Important environment note
 
-- Add/edit/delete chunks with up to three personal examples and notes
-- Groups with safe move-on-delete behavior
-- Library search across chunk text, examples, and notes
-- Sort and status filtering
-- Recall-first review cards with reveal stage
-- Special / Mastered / Next actions
-- Optional right swipe to mark Mastered
-- Weighted review priority (Special 5, Review 2, Mastered configurable; default 0.5)
-- Complete-group review without repeats
-- Daily Review with configurable target
-- Overview counts
-- JSON backup/restore with internal safety backup
-- CSV export
-- Adaptive coconut app icon
-- GitHub Actions debug APK build
+This generated archive intentionally does not contain `gradle-wrapper.jar`.
+Open it in Android Studio and let Android Studio sync the project, or generate
+the wrapper locally with a compatible Gradle installation.
 
-## Review selection
+The current generation environment has Java but no Android SDK, adb, sdkmanager,
+or system Gradle installation, so an actual Android build cannot be executed here.
 
-Normal and Daily review use weighted sampling **without replacement**. Each candidate receives an exponential-race key based on its status weight, then the lowest keys are selected. This makes Special chunks much more likely to appear while still keeping Mastered chunks eligible, and avoids immediate duplicates inside a session.
-
-Complete Group Review ignores weights and shuffles every chunk in the selected group exactly once.
 
 ## Database
 
-`groups`
-- id
-- name
-- createdAt
+Database file: `coconut_chunks.db`
 
-`chunks`
-- id
-- chunkText
-- example1/2/3
-- groupId
-- status
-- note
-- createdAt
-- editedAt
-- lastReviewedAt
-- totalReviewCount
+Schema version: `1`
 
-Foreign-key deletion uses `SET NULL` as a final safety net. Normal group deletion explicitly moves chunks to the selected destination first.
+Only one table is used: `chunks`.
 
-## Search
+No destructive migration fallback is configured. Future schema changes must add
+an explicit migration rather than silently deleting personal data.
 
-Room executes the search locally with `LIKE` across chunk text, all three examples, and note. Group/status filters and sort order are also applied in SQL.
+## Round 2 verification
 
-## Backup
-
-JSON backup preserves groups, chunk IDs, examples, statuses, notes, and review metadata. Before import replaces the database, the app writes a safety JSON backup into internal app storage.
-
-CSV export contains:
-Chunk, Example 1, Example 2, Example 3, Group, Status, Note.
-
-## Open in Android Studio
-
-1. Open Android Studio.
-2. Choose **Open** and select the `CoconutChunks` folder.
-3. Use JDK 17.
-4. Let Gradle sync and install Android SDK 36 if prompted.
-5. Run the `app` configuration on an emulator or Android phone (Android 6.0 / API 23+).
-
-The repository includes `gradle-wrapper.properties` but not the binary wrapper JAR. Android Studio can use its configured Gradle installation, or run `gradle wrapper --gradle-version 8.13` once to generate the wrapper files.
-
-## Build APK locally
-
-With Gradle 8.13 installed:
-
-```bash
-gradle assembleDebug
-```
-
-APK:
-
-```text
-app/build/outputs/apk/debug/app-debug.apk
-```
-
-After generating the Gradle wrapper, you can instead run:
+The Room model and DAO are covered by instrumentation tests using an in-memory
+database. The generation environment still has no Android SDK / adb / emulator,
+so these tests and `assembleDebug` cannot be executed here. Run them from an
+Android SDK-enabled machine with:
 
 ```bash
 ./gradlew assembleDebug
+./gradlew connectedAndroidTest
 ```
 
-## GitHub Actions
 
-Push the project to GitHub. The workflow `.github/workflows/android.yml`:
+## Round 3 status
 
-1. checks out the repository;
-2. installs JDK 17;
-3. installs Android SDK 36;
-4. configures Gradle 8.13;
-5. runs unit tests;
-6. builds the debug APK;
-7. uploads `app-debug.apk` as the `coconut-chunks-debug-apk` artifact.
+Implemented:
 
-Find it under **GitHub → Actions → latest successful run → Artifacts**.
+- Navigation Compose
+- Home route
+- Add route
+- Library route
+- Edit route with Long `chunkId` argument
+- Review route
+- Settings route
+- Explicit Back buttons that call `popBackStack()`
+- Normal system Back behavior remains handled by Navigation Compose
+- Placeholder screen content only; no CRUD or review business logic yet
 
-## Install on a phone
+Route map:
 
-1. Build/download `app-debug.apk`.
-2. Copy it to the Android phone.
-3. Open the APK.
-4. Android may ask you to allow installation from that file-manager/browser source.
-5. Install Coconut Chunks.
-
-No internet permission is declared, so all app content remains local.
-
-## Tests included
-
-Local unit tests cover weighted selection, non-repetition, daily target, complete-group coverage, and continued Mastered eligibility.
-
-Instrumented repository tests cover:
-- add with incomplete examples;
-- edit/delete;
-- group deletion without chunk deletion;
-- search by chunk/example/note;
-- review status + metadata updates;
-- a 10,000-chunk query scenario.
-
-UI gesture/card reveal behavior is implemented in Compose and is ready for UI instrumentation expansion.
-
-
-## Release Candidate verification
-
-Round 4 adds Android lint to CI, Room schema export configuration, startup/persistence tests, accessibility semantics, and a manual release checklist.
-
-For a release candidate build:
-
-```bash
-gradle testDebugUnitTest
-gradle lintDebug
-gradle assembleDebug
+```text
+home
+├── add
+├── library
+│   └── edit/{chunkId}
+├── review
+└── settings
 ```
 
-Then complete `RELEASE_CHECKLIST.md` on a real Android phone before treating the build as stable.
+The temporary "Open edit route (test)" button on Library exists only to validate
+the `edit/{chunkId}` route before real Library rows are implemented.
 
 
-## Stable release package
+## Round 4 status
 
-Version: `1.3.0`  
-Version code: `6`
+Implemented the complete Add Chunk write path:
 
-Release preparation files:
-- `RELEASE_NOTES_1.3.0.md`
-- `SIGNING_AND_RELEASE.md`
-- `FINAL_RELEASE_CHECKLIST.md`
+```text
+AddChunkScreen
+    ↓
+AddChunkViewModel
+    ↓
+ChunkRepository
+    ↓
+ChunkDao
+    ↓
+Room
+```
 
-The repository is configured for environment-variable-based signing so release secrets never need to be committed.
+Behavior:
+
+- `Chunk` is required; Save is disabled while blank.
+- Empty examples are stored as empty strings.
+- Empty Group is normalized to `Ungrouped`.
+- Group can be typed freely.
+- Existing groups can be selected from a small dropdown.
+- German Unicode text is handled as normal Kotlin/SQLite text.
+- Save is disabled while an insert is running, preventing double-save duplicates.
+- Successful save pops the current navigation destination.
+- Cancel pops without saving.
+- No Snackbar is used in V1.
+- No Library/Edit/Review business logic was added in this round.
+
+
+## Round 5 status
+
+Implemented Library:
+
+- Observes Room through `ChunkRepository.observeAll()` and `observeGroups()`.
+- Search matches `chunkText` only and is case-insensitive.
+- Group filter contains `All`, `Ungrouped`, and existing groups.
+- Search and group filtering are small pure Kotlin functions.
+- Library rows show only Chunk text, Group, and Status.
+- Example sentences are not shown in the list.
+- `LazyColumn` uses `key = { it.id }`.
+- Tapping a real chunk navigates to `edit/{chunkId}`.
+- Empty database and empty search results are handled explicitly.
+- Added JVM unit tests for search and group filtering.
+- Edit remains a placeholder screen until the next round.
+
+
+## Round 6 status
+
+Implemented Edit / Delete:
+
+- `EditChunkViewModel` observes the chunk by its real Room `id`.
+- Chunk, Example 1-3, Group, and Status are editable.
+- Existing groups can still be selected, or Group can be typed manually.
+- Empty Group is normalized to `Ungrouped`.
+- Save uses `repository.update(...)` on the original entity copy.
+- `id` and `createdAt` are preserved; `updatedAt` changes.
+- Save is guarded against blank Chunk and repeated taps.
+- Delete uses a simple confirmation dialog:
+  - `Delete this chunk?`
+  - `Cancel`
+  - `Delete`
+- Delete uses the original Room entity and returns after success.
+- Missing/deleted chunks show `Chunk not found.` instead of crashing.
+- Save/delete failures stay on-screen with a small error message.
+- Review logic is still untouched.
+
+
+## Round 7 status
+
+Implemented the Review Pool as pure Kotlin logic only.
+
+Rules:
+
+```text
+REVIEW   -> 1 copy
+SPECIAL  -> 2 copies
+MASTERED -> 1 copy only when Include mastered is enabled
+```
+
+Selection:
+
+- `All` includes eligible chunks from every group.
+- A specific group includes only chunks whose `groupName` matches exactly.
+- MASTERED is excluded by default.
+- The weighted list is shuffled once when the pool is built.
+- There is no repeated database querying for each next card.
+- There is no per-card random selection.
+- There is no SPECIAL adjacency correction in V1.
+- The input list is never mutated.
+
+The builder accepts a `Random` parameter only to make JVM tests deterministic.
+Production code will use `Random.Default`.
+
+Added JVM unit tests for:
+- empty database
+- REVIEW appears once
+- SPECIAL appears twice
+- MASTERED excluded by default
+- MASTERED included when enabled
+- group selection
+- Review All
+- exact weighting
+- non-mutating input
+
+
+## Round 8 status
+
+Implemented Review UI and Review Session ViewModel.
+
+Setup:
+- `All` or one existing group.
+- `Include mastered chunks` checkbox, default off.
+- `Start Review`.
+- Empty eligible pool shows `No chunks available for review.`
+
+Session:
+- The current Room list is captured when Start Review builds the pool.
+- Pool construction uses the pure Round 7 builder and shuffles once.
+- Cards do not query Room for each next item.
+- Card initially shows Chunk, Group, Status, and `Tap to reveal examples`.
+- Clicking the card reveals only non-empty examples.
+- After reveal, exactly three controls appear:
+  - `Special`
+  - `Next`
+  - `Mastered`
+- `Special` and `Mastered` persist to Room before advancing.
+- `Next` advances without changing status.
+- Status updates also refresh any later duplicate of the same SPECIAL chunk inside the current session.
+- A failed status write stays on the same card and shows `Could not update status.`
+
+Completion:
+- `Review complete`
+- `Reviewed: X`
+- `Marked Special: X`
+- `Marked Mastered: X`
+- `Finish`
+- `Review Again`
+- Review Again rebuilds and reshuffles the same current selection from latest local data.
+
+No swipe gestures, long press, animations, background work, or internet features were added.
+
+
+## Round 9 status
+
+Implemented Basic Settings:
+
+- `About Coconut Chunks`
+- A short offline/private description
+- Live `Database item count`
+- No reset button in the simplified V1 plan
+- No extra settings
+
+Testing cleanup:
+
+- Added a file-backed Room reopen test for persistence across database reopen.
+- Added `TEST_MATRIX.md` mapping all original 18 requested tests to current coverage.
+- Pure logic stays in JVM tests.
+- Room CRUD/persistence stays in instrumentation tests.
+- End-to-end Compose/emulator verification remains pending because this environment has no Android SDK/emulator.
+
+
+## Round 10 final audit
+
+Final static audit changes:
+
+- Review session startup now performs an explicit one-shot Room read with `getAllOnce()`.
+- The review pool is built from that one snapshot, then the session advances only by index.
+- Review Again performs one new snapshot read and reshuffle.
+- This removes the small race where a cached Flow value could still be empty when Start Review is tapped immediately.
+- Review setup disables controls while the one-shot load is running.
+- Removed the remaining force-unwrap pattern from instrumentation tests.
+- Added a DAO test for `getAllOnce()` snapshot ordering.
+
+Environment limitation remains:
+
+- Java is available.
+- Android SDK, adb, sdkmanager, Gradle executable, and emulator are not available.
+- Therefore `assembleDebug`, `test`, and `connectedAndroidTest` cannot be truthfully executed in this environment.
+- The project also cannot include a genuine `gradle-wrapper.jar` because none is installed locally; no fake wrapper binary was created.
+
+
+## GitHub CI / APK build
+
+A GitHub Actions workflow is now included at:
+
+```text
+.github/workflows/android-ci.yml
+```
+
+It can build and test Coconut Chunks without Android Studio on the user's computer.
+
+CI uses:
+- JDK 17
+- Android SDK 36
+- Gradle 8.13 installed by GitHub Actions
+- JVM unit tests
+- debug APK build
+- Android emulator instrumentation tests
+- APK artifact upload
+
+See `GITHUB_BUILD_GUIDE.md`.

@@ -1,88 +1,25 @@
-# Signing and Release Guide
+# Coconut Chunks V1 — Signing and Release
 
-## 1. Create a keystore once
+The release signing key is intentionally not stored in this repository.
 
-Run locally:
+## Permanent release identity
 
-```bash
-keytool -genkeypair \
-  -v \
-  -keystore coconut-chunks-release.jks \
-  -alias coconut-chunks \
-  -keyalg RSA \
-  -keysize 4096 \
-  -validity 10000
-```
+- Application ID: `com.coconutchunks.app`
+- Key alias: `coconut-chunks-release`
+- Certificate SHA-256:
+  `CB:D5:28:63:AE:9F:22:A1:F1:CB:6D:C8:46:22:0D:66:46:2D:FF:0C:0A:8D:DB:6D:76:BD:41:6E:BD:37:99:7C`
+- Valid until: 2053-12-24
 
-Keep the `.jks` file and passwords outside the repository.
+Every long-term release APK must use this same key.
 
-## 2. Set environment variables
+## Environment variables expected by Gradle
 
-macOS / Linux:
+When building a signed release, provide:
 
-```bash
-export COCONUT_KEYSTORE_PATH="/absolute/path/to/coconut-chunks-release.jks"
-export COCONUT_KEYSTORE_PASSWORD="..."
-export COCONUT_KEY_ALIAS="coconut-chunks"
-export COCONUT_KEY_PASSWORD="..."
-```
+- `COCONUT_KEYSTORE_PATH`
+- `COCONUT_KEYSTORE_PASSWORD`
+- `COCONUT_KEY_PASSWORD`
 
-Windows PowerShell:
+The alias is fixed in the build configuration as `coconut-chunks-release`.
 
-```powershell
-$env:COCONUT_KEYSTORE_PATH="C:\path\to\coconut-chunks-release.jks"
-$env:COCONUT_KEYSTORE_PASSWORD="..."
-$env:COCONUT_KEY_ALIAS="coconut-chunks"
-$env:COCONUT_KEY_PASSWORD="..."
-```
-
-## 3. Build signed release artifacts
-
-APK:
-
-```bash
-gradle assembleRelease
-```
-
-AAB:
-
-```bash
-gradle bundleRelease
-```
-
-Expected outputs:
-
-```text
-app/build/outputs/apk/release/app-release.apk
-app/build/outputs/bundle/release/app-release.aab
-```
-
-## 4. Verify the APK
-
-```bash
-apksigner verify --verbose app/build/outputs/apk/release/app-release.apk
-```
-
-Optional certificate printout:
-
-```bash
-apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
-```
-
-## 5. Install on a device
-
-```bash
-adb install -r app/build/outputs/apk/release/app-release.apk
-```
-
-Then complete `RELEASE_CHECKLIST.md`.
-
-## Security note
-
-Never commit:
-- keystore files;
-- keystore passwords;
-- key passwords;
-- release secrets.
-
-This project reads signing credentials only from environment variables.
+The keystore and passwords must never be committed to Git.
