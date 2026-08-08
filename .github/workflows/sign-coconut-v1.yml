@@ -26,11 +26,11 @@ jobs:
           path: ${{ runner.temp }}/unsigned
           github-token: ${{ github.token }}
 
-      - name: Prepare Android build tools
+      - name: Prepare unsigned APK
         shell: bash
         run: |
           set -euo pipefail
-          sdkmanager "build-tools;36.0.0" >/dev/null
+          test -x "$ANDROID_HOME/build-tools/36.0.0/apksigner"
           unsigned_apk="$(find "$RUNNER_TEMP/unsigned" -type f -name '*.apk' -print -quit)"
           test -n "$unsigned_apk"
           cp "$unsigned_apk" "$RUNNER_TEMP/Coconut-Chunks-1.0.0-unsigned.apk"
