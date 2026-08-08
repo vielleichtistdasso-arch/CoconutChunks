@@ -1,4 +1,4 @@
-# Coconut Chunks — 1.3.0
+# DE Coconut Chunks — 1.3.0
 
 A personal, offline-first Android app for collecting and reviewing German language chunks.
 
@@ -116,7 +116,7 @@ Find it under **GitHub → Actions → latest successful run → Artifacts**.
 2. Copy it to the Android phone.
 3. Open the APK.
 4. Android may ask you to allow installation from that file-manager/browser source.
-5. Install Coconut Chunks.
+5. Install DE Coconut Chunks.
 
 No internet permission is declared, so all app content remains local.
 
@@ -153,7 +153,7 @@ Then complete `RELEASE_CHECKLIST.md` on a real Android phone before treating the
 ## Stable release package
 
 Version: `1.3.0`  
-Version code: `6`
+Version code: `6`  \nApplication ID: `com.coconutchunks.de`
 
 Release preparation files:
 - `RELEASE_NOTES_1.3.0.md`
