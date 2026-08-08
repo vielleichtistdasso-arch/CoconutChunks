@@ -3,17 +3,18 @@ package com.coconutchunks.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.coconutchunks.app.ui.CoconutApp
-import com.coconutchunks.app.ui.CoconutTheme
+import androidx.activity.enableEdgeToEdge
+import com.coconutchunks.app.ui.navigation.CoconutChunksApp
+import com.coconutchunks.app.ui.theme.CoconutChunksTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
         setContent {
-            CoconutTheme {
-                val vm: AppViewModel = viewModel()
-                CoconutApp(vm)
+            CoconutChunksTheme {
+                CoconutChunksApp()
             }
         }
     }
