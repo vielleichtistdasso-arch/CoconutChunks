@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface ChunkDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(chunk: ChunkEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertAll(chunks: List<ChunkEntity>)
 
     @Update
     suspend fun update(chunk: ChunkEntity): Int
@@ -48,4 +52,13 @@ interface ChunkDao {
 
     @Query("SELECT COUNT(*) FROM chunks")
     fun observeCount(): Flow<Int>
+
+    @Query("DELETE FROM chunks")
+    suspend fun deleteAll()
+
+    @Transaction
+    suspend fun replaceAll(chunks: List<ChunkEntity>) {
+        deleteAll()
+        insertAll(chunks)
+    }
 }
