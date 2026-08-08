@@ -21,7 +21,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           repository: vielleichtistdasso-arch/CoconutChunks
-          run-id: 31246287690
+          run-id: 31246831497
           name: EN-Coconut-Chunks-1.0.1-unsigned-release
           path: ${{ runner.temp }}/unsigned
           github-token: ${{ github.token }}
