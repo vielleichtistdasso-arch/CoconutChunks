@@ -123,6 +123,13 @@ jobs:
             -camera-back none
           script: gradle :app:connectedDebugAndroidTest --stacktrace
 
+      - name: Verify instrumentation tests actually ran
+        run: |
+          if ! grep -R -E 'tests="[1-9][0-9]*"' app/build/outputs/androidTest-results/connected/; then
+            echo "No executed Android instrumentation tests were found."
+            exit 1
+          fi
+
       - name: Upload instrumentation reports
         if: always()
         uses: actions/upload-artifact@v7
