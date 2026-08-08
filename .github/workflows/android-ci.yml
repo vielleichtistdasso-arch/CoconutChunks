@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+      - agent/github-ci-ready-v1
   pull_request:
 
 permissions:
