@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.coconutchunks.app.data.ChunkEntity
 import com.coconutchunks.app.review.REVIEW_ALL
 
@@ -263,6 +264,8 @@ private fun ReviewCard(
             Text(
                 text = chunk.chunkText,
                 fontWeight = FontWeight.Bold,
+                fontSize = 23.sp,
+                lineHeight = 30.sp,
             )
 
             Text(chunk.groupName)
@@ -271,8 +274,15 @@ private fun ReviewCard(
             if (!revealed) {
                 Text("Tap to reveal examples")
             } else {
-                nonEmptyExamples(chunk).forEachIndexed { index, example ->
-                    Text("${index + 1}. $example")
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                ) {
+                    nonEmptyExamples(chunk).forEachIndexed { index, example ->
+                        Text(
+                            text = "${index + 1}. $example",
+                            lineHeight = 24.sp,
+                        )
+                    }
                 }
             }
         }
