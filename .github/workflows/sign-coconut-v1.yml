@@ -41,8 +41,9 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.COCONUT_KEYSTORE_BASE64 }}
         run: |
           set -euo pipefail
-          test -n "$KEYSTORE_BASE64"
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/coconut-chunks-release.jks"
+          normalized_keystore_base64="$(printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]')"
+          test -n "$normalized_keystore_base64"
+          printf '%s' "$normalized_keystore_base64" | base64 --decode > "$RUNNER_TEMP/coconut-chunks-release.jks"
           test -s "$RUNNER_TEMP/coconut-chunks-release.jks"
 
       - name: Sign and verify release APK
