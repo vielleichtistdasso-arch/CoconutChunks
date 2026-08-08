@@ -2,6 +2,16 @@
 
 Minimal native Android app for collecting and reviewing German language chunks.
 
+## V1 final polish
+
+- Larger, more readable review chunk text and increased spacing between examples
+- Coconut-inspired brown Material 3 color palette
+- Subtle asymmetric rounded Home buttons
+- JSON backup export and restore from Settings for phone migration
+- Restore is transactional and validates the backup before replacing current data
+- AndroidJUnitRunner is explicitly configured so instrumentation tests are actually discovered
+- CI fails if an emulator run reports zero instrumentation tests
+
 ## Round 2 status
 
 Implemented:
