@@ -94,6 +94,28 @@ class ChunkDaoTest {
     }
 
     @Test
+    fun replaceAllSwapsDatabaseContentsAtomically() = runBlocking {
+        dao.insert(sampleChunk(chunkText = "Old chunk"))
+
+        dao.replaceAll(
+            listOf(
+                sampleChunk(
+                    id = 42L,
+                    chunkText = "Restored chunk",
+                    groupName = "Backup",
+                    now = 42L,
+                )
+            )
+        )
+
+        val chunks = dao.getAllOnce()
+        assertEquals(1, chunks.size)
+        assertEquals(42L, chunks.single().id)
+        assertEquals("Restored chunk", chunks.single().chunkText)
+        assertEquals("Backup", chunks.single().groupName)
+    }
+
+    @Test
     fun searchMatchesChunkTextOnly() = runBlocking {
         dao.insert(
             sampleChunk(
@@ -145,6 +167,7 @@ class ChunkDaoTest {
     }
 
     private fun sampleChunk(
+        id: Long = 0,
         chunkText: String,
         example1: String = "",
         example2: String = "",
@@ -153,6 +176,7 @@ class ChunkDaoTest {
         status: ChunkStatus = ChunkStatus.REVIEW,
         now: Long = 1L,
     ) = ChunkEntity(
+        id = id,
         chunkText = chunkText,
         example1 = example1,
         example2 = example2,
