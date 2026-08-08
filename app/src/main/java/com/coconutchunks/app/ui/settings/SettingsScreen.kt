@@ -78,7 +78,7 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Text(
-                text = "About Coconut Chunks",
+                text = "About EN Coconut Chunks",
                 fontWeight = FontWeight.SemiBold,
             )
 
@@ -123,7 +123,7 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showRestoreConfirmation = false },
             title = { Text("Restore backup?") },
-            text = { Text("This will replace all chunks currently stored in Coconut Chunks.") },
+            text = { Text("This will replace all chunks currently stored in EN Coconut Chunks.") },
             confirmButton = {
                 TextButton(
                     onClick = {
