@@ -81,13 +81,13 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: coconut-chunks-1.3.0-debug
+          name: de-coconut-chunks-1.3.0-debug
           path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload unsigned release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: coconut-chunks-1.3.0-unsigned-release
+          name: de-coconut-chunks-1.3.0-unsigned-release
           path: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             app/build/outputs/bundle/release/app-release.aab

@@ -21,7 +21,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.coconutchunks.app"
+        applicationId = "com.coconutchunks.de"
         minSdk = 23
         targetSdk = 36
         versionCode = 6
