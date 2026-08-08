@@ -157,25 +157,30 @@ class CoconutChunksUiTest {
             .isNotEmpty()
         }
 
+        composeRule.onNodeWithTag(
+            "revealed_examples",
+            useUnmergedTree = true
+        ).assertDoesNotExist()
+
         composeRule.onNodeWithTag("review_card")
             .assertExists()
             .performClick()
 
         composeRule.waitUntil(
-            conditionDescription = "saved example text should appear after tapping review card",
+            conditionDescription = "revealed examples should appear after tapping review card",
             timeoutMillis = 10_000
         ) {
             composeRule
-                .onAllNodesWithText(
-                    "Ich erinnere mich daran.",
+                .onAllNodesWithTag(
+                    "revealed_examples",
                     useUnmergedTree = true
                 )
                 .fetchSemanticsNodes()
                 .isNotEmpty()
         }
 
-        composeRule.onNodeWithText(
-            "Ich erinnere mich daran.",
+        composeRule.onNodeWithTag(
+            "revealed_examples",
             useUnmergedTree = true
         ).assertExists()
     }
